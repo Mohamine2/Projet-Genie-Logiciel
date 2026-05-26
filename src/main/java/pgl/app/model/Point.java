@@ -3,6 +3,8 @@ package pgl.app.model;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
+import java.util.Objects;
+
 /**
  * Represents a point in a 2D Cartesian plane.
  * <p>
@@ -57,5 +59,31 @@ public class Point {
 
     public String toString(){
         return "x = " + getX() + ", y = " + getY();
+    }
+
+
+    /**
+     * Compares this point to the specified object.
+     * The result is {@code true} if and only if the argument is not {@code null}
+     * and is a {@link Point} object that has the same X and Y coordinates
+     * as this point.
+     *
+     * @param obj the object to compare this {@code Point} against.
+     * @return {@code true} if the given object represents a {@code Point}
+     * equivalent to this point; {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Point)) return false;
+
+        Point other = (Point) obj;
+
+        return Double.compare(this.getX(), other.getX()) == 0 &&
+                Double.compare(this.getY(), other.getY()) == 0;
+    }
+
+    public int hashCode(){
+        return Objects.hash(getX(),getY());
     }
 }
