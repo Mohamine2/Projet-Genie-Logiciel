@@ -50,4 +50,9 @@ public class Triangle {
     public boolean containsInCircumcircle(Point p) {
         return GeometryUtils.isPointInCircumcircle(p, this);
     }
+    
+    @Override
+    public String toString() {
+    	return "Triangle {" + "a =(" + a.getX() + "," + a.getY() + ", b = " + b.getX() + "," + b.getY() + ", c =" + c.getX() + "," + c.getY() + "}";
+    }
 }

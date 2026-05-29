@@ -2,7 +2,7 @@ package pgl.app;
 
 import pgl.app.model.*;
 import java.util.*;
-
+import pgl.app.algo.DelaunayEngine;
 /**
  * The ConsoleRunner class serves as the command-line interface entry point for the application.
  * It provides a robust interface to test the logic (Voronoi/Delaunay related models)
