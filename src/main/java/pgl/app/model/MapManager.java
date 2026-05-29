@@ -9,6 +9,7 @@ import pgl.app.algo.DelaunayEngine;
 /**
  * Manages and orchestrates map data.
  * Centralizes entities (Sites, UserPoints, Triangles) and synchronizes geometric calculations.
+ * @version 1.0
  */
 public class MapManager {
 

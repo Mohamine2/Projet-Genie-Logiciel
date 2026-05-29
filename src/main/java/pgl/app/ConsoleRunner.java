@@ -2,7 +2,7 @@ package pgl.app;
 
 import pgl.app.model.*;
 import java.util.*;
-import pgl.app.algo.DelaunayEngine;
+
 /**
  * The ConsoleRunner class serves as the command-line interface entry point for the application.
  * It provides a robust interface to test the logic (Voronoi/Delaunay related models)
@@ -11,15 +11,8 @@ import pgl.app.algo.DelaunayEngine;
  */
 public class ConsoleRunner {
 
-    /**
-     * The list of sites currently loaded or generated in the session.
-     */
-    private static List<Site> currentSites = new ArrayList<>();
-
-    /**
-     * The list of users currently loaded or generated in the session.
-     */
-    private static List<UserPoint> currentUsers = new ArrayList<>();
+    /** MapManager instance to manage lists of UserPoints, Sites and Triangles  */
+    private static final MapManager mapManager = new MapManager();
 
     /**
      * Main entry point for the console application. Handles the main menu loop.
@@ -35,28 +28,26 @@ public class ConsoleRunner {
             System.out.println("\nSelect an option:");
             System.out.println("1. Automated Test (Random Sites & Users)");
             System.out.println("2. Manual Test (Input Sites & Users)");
-            System.out.println("3. Test Triangle & Geometry (using current points)");
-            System.out.println("4. Exit");
+            System.out.println("3. Exit");
             System.out.print("Choice: ");
 
             if (sc.hasNextInt()) {
                 int mode = sc.nextInt();
                 switch (mode) {
                     case 1:
-                        displayStats(randomTest(sc, askNaturalNumber(sc, "How many sites (You need at least 3 sites to create a triangle) ? ")));
+                        displayStats(randomTest(sc, askNaturalNumber(sc, "How many sites (You need at least 3 sites to create a triangle) ? 1")));
+                        displayTriangles(mapManager.getTriangles());
                         break;
                     case 2:
                         displayStats(manualTest(sc, askNaturalNumber(sc, "How many sites (You need at least 3 sites to create a triangle) ? ")));
+                        displayTriangles(mapManager.getTriangles());
                         break;
                     case 3:
-                        testTriangleAndGeometry();
-                        break;
-                    case 4:
                         running = false;
                         System.out.println("Exiting...");
                         break;
                     default:
-                        System.out.println("Invalid option! Please enter a number between 1 and 4.");
+                        System.out.println("Invalid option! Please enter 1, 2, or 3.");
                 }
             } else {
                 System.out.println("Error: Please enter a valid number.");
@@ -76,36 +67,22 @@ public class ConsoleRunner {
      */
     public static Map<Integer, Integer> randomTest(Scanner sc, int nbSites) {
         Random rand = new Random();
-        List<Site> sites = new ArrayList<>();
+
+        mapManager.clear();
 
         System.out.println("\n--- Generating " + nbSites + " random sites ---");
-
         for (int i = 0; i < nbSites; i++) {
-            // Generating coordinates between -100 and 100
-            sites.add(new Site(rand.nextInt(201) - 100, rand.nextInt(201) - 100, i + 1));
+            mapManager.addSite(new Site(rand.nextInt(201) - 100, rand.nextInt(201) - 100, i + 1));
         }
 
         int nbUsers = askNaturalNumber(sc, "How many users ? ");
         System.out.println("\n--- Generating " + nbUsers + " random users ---");
 
-        List<UserPoint> users = new ArrayList<>();
-
-        for(int i = 0; i < nbUsers; i++){
-            UserPoint user = new UserPoint(rand.nextInt(201) - 100, rand.nextInt(201) - 100);
-            users.add(user);
-            Site closest = findClosestSite(user, sites);
-            user.setClosestSite(closest);
+        for (int i = 0; i < nbUsers; i++) {
+            mapManager.addUserPoint(new UserPoint(rand.nextInt(201) - 100, rand.nextInt(201) - 100));
         }
 
-        // Global save for Option 3
-        currentSites = sites;
-        currentUsers = users;
-
-        if (sites.size() >= 2) {
-            testEdge(sites);
-        }
-
-        return statistics(users, sites);
+        return statistics(mapManager.getUserPoints(), mapManager.getSites());
     }
 
     /**
@@ -116,59 +93,23 @@ public class ConsoleRunner {
      * @return A Map mapping each Site ID to its total number of assigned users.
      */
     public static Map<Integer, Integer> manualTest(Scanner sc, int sitesNb) {
-        List<Site> sites = new ArrayList<>();
+        mapManager.clear();
 
         System.out.println("\n--- Manual entry for " + sitesNb + " sites ---");
         for (int i = 0; i < sitesNb; i++) {
             System.out.println("Site #" + (i + 1) + ":");
-            int x = askInt(sc, "Enter X: ");
-            int y = askInt(sc, "Enter Y: ");
-            sites.add(new Site(x, y, i + 1));
+            mapManager.addSite(new Site(askInt(sc, "Enter X: "), askInt(sc, "Enter Y: "), i + 1));
         }
 
         int nbUsers = askNaturalNumber(sc, "How many users ? ");
         System.out.println("\n--- Manual entry for " + nbUsers + " users ---");
 
-        List<UserPoint> users = new ArrayList<>();
-
-        for(int i = 0; i < nbUsers; i++){
+        for (int i = 0; i < nbUsers; i++) {
             System.out.println("USER " + (i + 1) + ":");
-            UserPoint user = new UserPoint(askInt(sc, "Enter User X: "), askInt(sc, "Enter User Y: "));
-            users.add(user);
-            Site closest = findClosestSite(user, sites);
-            user.setClosestSite(closest);
+            mapManager.addUserPoint(new UserPoint(askInt(sc, "Enter User X: "), askInt(sc, "Enter User Y: ")));
         }
 
-        // Global save for Option 3
-        currentSites = sites;
-        currentUsers = users;
-
-        if (sites.size() >= 2) {
-            testEdge(sites);
-        }
-
-        return statistics(users, sites);
-    }
-
-    /**
-     * Logic to find and return the closest site for a given user based on squared distance.
-     *
-     * @param user  The UserPoint to evaluate.
-     * @param sites The list of available sites.
-     * @return The closest Site object, or null if the sites list is empty.
-     */
-    public static Site findClosestSite(UserPoint user, List<Site> sites) {
-        Site closest = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Site site : sites) {
-            double dist = user.distanceSquaredTo(site.getX(), site.getY());
-            if (dist < minDistance) {
-                minDistance = dist;
-                closest = site;
-            }
-        }
-        return closest;
+        return statistics(mapManager.getUserPoints(), mapManager.getSites());
     }
 
     /**
@@ -237,70 +178,22 @@ public class ConsoleRunner {
     }
 
     /**
-     * Displays the results of the circumcircle and triangle test in the console.
-     * * @param triangle    The Triangle object being evaluated.
-     * @param testResults A Map containing point descriptions and their inclusion status.
+     * Displays the triangles in the console.
+     *
+     * @param triangles The list of triangles given by the DelaunayEngine
      */
-    public static void displayTriangleResults(Triangle triangle, Map<String, Boolean> testResults) {
-        System.out.println("\n--- Résultats du Test Triangle & GeometryUtils ---");
-
-        Point center = triangle.getCircumcenter();
-        System.out.println("Centre du cercle circonscrit calculé : (" + center.getX() + ", " + center.getY() + ")");
-        System.out.println("\n--- Test du prédicat In-Circle ---");
-
-        testResults.forEach((pointDesc, isInside) -> {
-            System.out.println(pointDesc + " est dans le cercle ? " + isInside);
-        });
-
+    public static void displayTriangles(List<Triangle> triangles) {
+        System.out.println("\n--- Delaunay Triangulation Results ---");
+        System.out.println("Total triangles generated: " + triangles.size());
+        int i = 1;
+        for (Triangle t : triangles) {
+            System.out.printf("  Triangle #%d: A(%.1f, %.1f) | B(%.1f, %.1f) | C(%.1f, %.1f)\n",
+                    i++,
+                    t.getA().getX(), t.getA().getY(),
+                    t.getB().getX(), t.getB().getY(),
+                    t.getC().getX(), t.getC().getY());
+        }
         System.out.println("----------------------------------------");
-    }
-
-    /**
-     * Evaluates which sites and users lie within the circumcircle of the given triangle.
-     * * @param triangle     The Triangle whose circumcircle is used for the inclusion test.
-     * @param sitesToTest  The list of sites to evaluate.
-     * @param usersToTest  The list of users to evaluate.
-     * @return An ordered Map linking the point description/ID to a Boolean (true if inside the circumcircle).
-     */
-    public static Map<String, Boolean> evaluateInCircle(Triangle triangle, List<Site> sitesToTest, List<UserPoint> usersToTest) {
-        Map<String, Boolean> results = new LinkedHashMap<>(); // LinkedHashMap to preserve insertion order
-
-        // Sites' test
-        for (Site s : sitesToTest) {
-            boolean inside = triangle.containsInCircumcircle(s);
-            results.put("Site ID " + s.getId() + " (" + s.getX() + ", " + s.getY() + ")", inside);
-        }
-
-        // Users' test
-        for (UserPoint u : usersToTest) {
-            boolean inside = triangle.containsInCircumcircle(u);
-            results.put("UserPoint (" + u.getX() + ", " + u.getY() + ")", inside);
-        }
-
-        return results;
-    }
-
-    /**
-     * Tests the geometric properties of a triangle created from the first three stored sites.
-     * Evaluates whether remaining sites and a subset of users are inside its circumcircle.
-     */
-    private static void testTriangleAndGeometry() {
-        if (currentSites.size() < 3) {
-            System.out.println("Erreur : Pas assez de sites en mémoire !");
-            return;
-        }
-
-        Site p1 = currentSites.get(0);
-        Site p2 = currentSites.get(1);
-        Site p3 = currentSites.get(2);
-        Triangle triangle = new Triangle(p1, p2, p3);
-
-        List<Site> sitesToTest = currentSites.subList(3, currentSites.size());
-        List<UserPoint> usersToTest = currentUsers.subList(0, Math.min(5, currentUsers.size()));
-
-        Map<String, Boolean> results = evaluateInCircle(triangle, sitesToTest, usersToTest);
-
-        displayTriangleResults(triangle, results);
     }
 
     /**
