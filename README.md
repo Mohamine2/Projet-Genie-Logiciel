@@ -24,6 +24,20 @@ To achieve this, it merges computational geometry implementing **Delaunay triang
 * **Interactive User Interface**: Dynamic map visualization and lateral control panel (`MapController`, `SidebarController`).
 * **Security**: Role-Based Access Control (`UserRole`, `SecurityContext`).
 * **Explainability & GDPR Compliance**: Traceability of dispatch decisions (`DispatchDecision`) and generation of GDPR-compliant impact reports (`GDPRReportingService`).
+* **Automated Unit Testing**: Complete unit test coverage for domain models and algorithm engines managed via JUnit 5 and Maven Surefire.
+
+---
+
+## 🛠️ Technical Stack
+
+| Category | Technology / Library | Usage |
+| :--- | :--- | :--- |
+| **Language** | Java 21 | Core application runtime & OOP logic |
+| **Build & Dependencies** | Apache Maven | Project management & dependency resolution |
+| **User Interface** | JavaFX 21 (`controls`, `fxml`) | Graphical desktop UI & custom spatial rendering |
+| **Algorithmic Engines** | Computational Geometry & Graph Theory | Custom A* Pathfinding, Delaunay Triangulation, Voronoi Diagrams |
+| **Data & Serialization** | JSON (`org.json`), CSV, Custom Binary (`.pglm`) | Map import/export, incident parsing, and state caching |
+| **Unit Testing** | JUnit 5 (Jupiter) & Maven Surefire | Automated testing suite for domain models and algorithms |
 
 ---
 
