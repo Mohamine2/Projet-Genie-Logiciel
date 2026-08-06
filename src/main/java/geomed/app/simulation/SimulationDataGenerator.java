@@ -1,4 +1,4 @@
-package geomed.app.test;
+package geomed.app.simulation;
 
 import geomed.app.MapManager;
 import geomed.app.model.*;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Utility data factory class responsible for provisioning randomized mock test structures.
+ * Utility data factory class responsible for provisioning randomized mock simulation structures.
  * <p>
  * This factory generates simulation instances of {@link Hospital} units, {@link VictimIncident}
  * occurrences, and matching interconnected {@link RoadEdge} paths. By design, this class is entirely

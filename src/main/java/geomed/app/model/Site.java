@@ -42,7 +42,7 @@ public class Site extends Point{
 	 */
 	public void setId(int id) {
 		if(id < 0) {
-			throw new IllegalArgumentException("L'id du site ne peut pas être négatif");
+			throw new IllegalArgumentException("The site ID cannot be negative.");
 		}
 		this.id = id;
 	}

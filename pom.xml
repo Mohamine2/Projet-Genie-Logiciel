@@ -13,6 +13,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>21.0.2</javafx.version>
+        <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
@@ -31,10 +32,25 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
+
+        <!-- JUnit 5 Dependance -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Plugin de Test Maven (Surefire) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+
             <!-- Plugin JavaFX -->
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -44,6 +60,7 @@
                     <mainClass>geomed.app.MainApp</mainClass>
                 </configuration>
             </plugin>
+
             <!-- Plugin Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -55,21 +72,20 @@
                 </configuration>
             </plugin>
 
+            <!-- Plugin Javadoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
                     <doclint>all,-missing</doclint>
-
                     <sourcepath>src/main/java</sourcepath>
-
                     <additionalOptions>-subpackages geomed.app</additionalOptions>
-
                     <source>21</source>
                 </configuration>
             </plugin>
 
+            <!-- Plugin Exec -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

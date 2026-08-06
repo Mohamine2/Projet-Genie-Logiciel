@@ -26,7 +26,7 @@ import geomed.app.security.UserRole;
 import geomed.app.algo.DispatchEngine;
 import geomed.app.explainability.DispatchDecision;
 import geomed.app.explainability.GDPRReportingService;
-import geomed.app.test.SimulationDataGenerator;
+import geomed.app.simulation.SimulationDataGenerator;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.stage.Stage;

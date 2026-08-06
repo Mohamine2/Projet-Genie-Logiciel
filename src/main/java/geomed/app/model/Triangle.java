@@ -46,7 +46,7 @@ public class Triangle {
     /**
      * Determines if a given point lies within the circumcircle of this triangle.
      *
-     * @param p The point to test.
+     * @param p The point to simulation.
      * @return true if the point is inside the circumcircle, false otherwise.
      */
     public boolean containsInCircumcircle(Point p) {

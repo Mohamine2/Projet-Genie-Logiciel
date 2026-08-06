@@ -8,7 +8,7 @@ import geomed.app.io.MapBinarySerializer;
 import geomed.app.model.*;
 import geomed.app.security.SecurityContext;
 import geomed.app.security.UserRole;
-import geomed.app.test.SimulationDataGenerator;
+import geomed.app.simulation.SimulationDataGenerator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import java.util.*;
 
 /**
  * The ConsoleRunner class serves as the command-line interface entry point for the application.
- * It provides a robust interface to test the medical dispatch logic (Voronoi/Delaunay related models)
+ * It provides a robust interface to simulation the medical dispatch logic (Voronoi/Delaunay related models)
  * without requiring the JavaFX graphical interface.
  * * @version 3.0
  */
@@ -400,7 +400,7 @@ public class ConsoleRunner {
     }
 
     /**
-     * Performs an automated test by generating random hospitals and victim incidents.
+     * Performs an automated simulation by generating random hospitals and victim incidents.
      *
      * @param sc          The Scanner object for input.
      * @param nbHospitals The number of hospitals to generate.

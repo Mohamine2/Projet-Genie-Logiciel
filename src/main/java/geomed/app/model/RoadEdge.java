@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Represents a physical road segment connecting two intersections.
  * Used exclusively for route calculation (Dijkstra's algorithm).
- * @version 1.0
+ * @version 2.0
  */
 public class RoadEdge {
 
@@ -34,9 +34,8 @@ public class RoadEdge {
         
         // Automatic calculation of the physical distance between the two points
         this.baseDistance = Math.sqrt(start.distanceSquaredTo(end.getX(), end.getY()));
-        
-        // By default, the road is perfectly clear (no traffic)
-        this.trafficFactor = trafficFactor;
+
+        setTrafficFactor(trafficFactor);
     }
 
     public RoadEdge(Point start, Point end) {

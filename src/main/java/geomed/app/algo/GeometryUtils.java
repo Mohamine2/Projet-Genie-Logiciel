@@ -42,7 +42,7 @@ public class GeometryUtils {
      * It uses an epsilon threshold to handle floating-point precision errors safely.
      * </p>
      *
-     * @param p the {@link Point} to test
+     * @param p the {@link Point} to simulation
      * @param t the {@link Triangle} whose circumcircle is being evaluated
      * @return true if the point lies strictly inside the circumcircle, false otherwise
      */
