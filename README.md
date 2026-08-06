@@ -130,6 +130,12 @@ To load a specific optimized binary (`.pglm`) road network, pass the file path a
 java -cp target/geomed-router-1.0-SNAPSHOT.jar geomed.app.ConsoleRunner --map="data/map.pglm"
 ```
 
+### 3. Run Unit Tests
+Execute the full automated JUnit 5 test suite via Maven:
+```bash
+mvn test
+```
+
 
 **CLI Features**: 
   * Includes all functionalities of the JavaFX application.
